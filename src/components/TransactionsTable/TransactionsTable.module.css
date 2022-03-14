@@ -1,0 +1,247 @@
+.bodyTable {
+  width: 100%;
+  table-layout: fixed;
+  border: none;
+  overflow-x: hidden;
+}
+
+.bodyTableScroll {
+  height: 346px;
+  overflow-x: hidden;
+  margin-top: 0px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #fff;
+  overflow-y: overlay;
+  scroll-behavior: unset;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #f5f6fb;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #ff751d;
+  border-radius: 20px;
+  border: 1px solid #f5f6fb;
+}
+
+.main {
+  width: 100%;
+  text-align: center;
+  border-radius: 30px;
+  color: rgb(0, 0, 0);
+  border-radius: 20px 20px 0 0;
+  background-color: #f5f6fb;
+  border-spacing: 0px 2px;
+  border-left: 2px;
+  border-left-style: outset;
+  /* border-right-style: inset; */
+  border-right-color: white;
+  border-left-color: transparent;
+}
+
+.mainTbody {
+  border-radius: 0;
+}
+
+.theadTable {
+  display: none;
+  align-items: center;
+  height: 38px;
+  font-size: 13px;
+  font-weight: normal;
+  color: #52555f;
+}
+
+.th {
+  /* padding: 10px; */
+  text-transform: uppercase;
+  color: rgb(0, 0, 0);
+  align-items: center;
+  letter-spacing: 0.02em;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 14px;
+  font-style: normal;
+}
+
+.td {
+  display: revert;
+  align-items: center;
+  height: 38px;
+  padding: 0 8px;
+  background: #ffffff;
+  color: #52555f;
+  border-bottom: 2px solid #f4f6fb;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 14px;
+  letter-spacing: 0.04em;
+}
+
+.thData {
+  width: 104px;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.thDesc {
+  text-align: left;
+}
+
+/* .thCateg {
+  width: 252px;
+  padding-left: 80px;
+} */
+
+.thSum {
+  text-align: right;
+}
+.tdSum {
+  font-weight: bold;
+  color: #407946;
+  text-align: right;
+}
+.tdSumExpense {
+  font-weight: bold;
+  color: #e7192e;
+  text-align: right;
+}
+.tdDesc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+.thIcon {
+  background: url('./deleteIcon.svg') center no-repeat;
+}
+
+/* .thEmpty {
+  width: 136px;
+} */
+
+@media screen and (min-width: 768px) {
+  .theadTable {
+    display: revert;
+    width: 605px;
+  }
+  .thData {
+    width: 87.87px;
+    padding-left: 21px;
+  }
+
+  .thDesc {
+    width: 135.84px;
+    padding-left: 37.13px;
+  }
+
+  .thCateg {
+    width: 193.29px;
+    padding-left: 69.29px;
+  }
+
+  .thSum {
+    width: 104px;
+  }
+  .tdSum {
+    width: 104px;
+  }
+
+  .tdSumExpense {
+    width: 104px;
+  }
+
+  .thEmpty {
+    width: 84px;
+  }
+
+  .thIcon {
+    width: 84px;
+    /* padding-left: 56px; */
+  }
+
+  .tdDesc {
+    width: 135.84px;
+    padding-left: 37.13px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .main {
+    width: 760px;
+  }
+  .thData {
+    width: 104px;
+    padding-left: 20px;
+  }
+
+  .thDesc {
+    width: 144px;
+    padding-left: 20px;
+  }
+
+  .thCateg {
+    width: 252px;
+    padding-left: 80px;
+  }
+
+  .thSum {
+    width: 134px;
+  }
+  .tdSum {
+    width: 134px;
+  }
+
+  .tdSumExpense {
+    width: 134px;
+  }
+
+  .tdDesc {
+    width: 144px;
+    padding-left: 20px;
+  }
+
+  .thEmpty {
+    width: 136px;
+  }
+
+  .thIcon {
+    width: 136px;
+    padding-left: 56px;
+  }
+
+  .bodyTable {
+    width: 760px;
+    margin-right: 30px;
+  }
+}
+
+.deleteBtn {
+  margin-right: auto;
+  margin-left: auto;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: transparent;
+  background-color: transparent;
+}
+
+.deleteBtnIcon {
+  width: 16px;
+  height: 18px;
+}
+
+.deleteBtn:hover {
+  color: #ff751d;
+  fill: currentColor;
+}
