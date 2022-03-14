@@ -3,14 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import s from './Balance.module.css';
 import Notification from '../Notification';
-import { getUserBalance } from '../../redux/auth/auth-selectors';
-import { authOperations } from '../../redux/auth';
+import { authOperations, authSelectors } from '../../redux/auth';
+import * as selectors from '../../redux/transactions/transactionsSelectors';
 
 export default function Balance({ style, hide }) {
   const dispatch = useDispatch();
   const location = useLocation();
-  const [userBalance, setUserBalance] = useState(0);
-  const balance = useSelector(getUserBalance);
+  const balance = useSelector(authSelectors.getUserBalance);
+  const [userBalance, setUserBalance] = useState(balance);
+  const isLoading = useSelector(selectors.getIsLoading);
   const [showingModal, setShowingModal] = useState(true);
 
   const toggleModal = () => {
@@ -18,8 +19,9 @@ export default function Balance({ style, hide }) {
   };
 
   useEffect(() => {
+    dispatch(authOperations.getUserBalance());
     setUserBalance(balance);
-  }, [balance]);
+  }, [isLoading, dispatch]);
 
   const handleChange = e => {
     const { value } = e.target;
@@ -53,7 +55,7 @@ export default function Balance({ style, hide }) {
           type="submit"
           onClick={handleBalance}
           className={`${
-            balance === 0 ? s.balance_button : s.balance_button
+            balance === 0 ? s.balance_button_active : s.balance_button
           } ${hide}`}
           disabled={balance !== 0 && 'disabled'}
         >
