@@ -1,20 +1,24 @@
 import { useState, useRef, Fragment } from 'react';
-import { NavLink } from 'react-router-dom';
 import Media from 'react-media';
 import optionsIncome from '../../data/incomeCategories.json';
-// import optionsOutcome from '../../data/outcomeCategories.json';
+import optionsOutcome from '../../data/outcomeCategories.json';
 
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 
-// import { useSelector, useDispatch} from 'react-redux'
-// import { incomeOutcomeOperations, incomeOutcomeSelectors } from 'Redux/incomeOutcome'
+import { useDispatch } from 'react-redux';
+import transactionsOperations from '../../redux/transactions/transactionsOperations';
 
 import styles from './IncomeOutcomeForm.module.css';
+import transactionCategory from './transactionCategory';
 
-const IncomeOutcomeForm = ({ showMobileAddView }) => {
-  // const transactions = useSelector(incomeOutcomeSelectors.getTransaction)
-  // const dispatch = useDispatch()
+const IncomeOutcomeForm = ({ transactionType, showMobileAddView }) => {
+  const [day] = useState(new Date().getDate());
+  const [month] = useState(new Date().getMonth() + 1);
+  const [year] = useState(new Date().getFullYear());
+
+  const type = transactionType;
+  const dispatch = useDispatch();
 
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -41,11 +45,43 @@ const IncomeOutcomeForm = ({ showMobileAddView }) => {
   const onSubmit = evt => {
     evt.preventDefault();
 
-    // dispatch(incomeOutcomeOperations.addTransaction({type, description, category, amount, day, month, year}))
+    const transaction = {
+      type: type,
+      description,
+      category: transactionCategory[category.value],
+      amount: Number(amount),
+      day: day.toString(),
+      month: month.toString(),
+      year: year.toString(),
+    };
 
+    dispatch(transactionsOperations.addTransaction(transaction));
+    // dispatch(transactionsOperations.getTransactions());
     setDescription('');
     setCategory('');
     setAmount('');
+  };
+
+  const onSubmitMobile = evt => {
+    evt.preventDefault();
+
+    const transaction = {
+      type: type,
+      description,
+      category: transactionCategory[category.value],
+      amount: Number(amount),
+      day: day.toString(),
+      month: month.toString(),
+      year: year.toString(),
+    };
+    console.log(transaction);
+
+    dispatch(transactionsOperations.addTransaction(transaction));
+    // dispatch(transactionsOperations.getTransactions());
+    setDescription('');
+    setCategory('');
+    setAmount('');
+    showMobileAddView();
   };
 
   const resetForm = () => {
@@ -60,9 +96,7 @@ const IncomeOutcomeForm = ({ showMobileAddView }) => {
     textInput.current.focus();
   };
 
-  // const options = type === 'outcome' ? optionsIncome : optionsOutcome;
-
-  const options = optionsIncome;
+  const options = type === 'consumption' ? optionsIncome : optionsOutcome;
 
   const setSelect = selectedOption => {
     setCategory(selectedOption);
@@ -88,7 +122,7 @@ const IncomeOutcomeForm = ({ showMobileAddView }) => {
                 type="button"
                 onClick={goBack}
               ></button>
-              <form className={styles.form} onSubmit={onSubmit}>
+              <form className={styles.form} onSubmit={onSubmitMobile}>
                 <ul className={styles.ul}>
                   <li className={styles.nameLi}>
                     <label className={styles.nameField}>

@@ -13,15 +13,18 @@ import ReportWrapper from '../../components/ReportWrapper';
 import { getToken } from '../../redux/auth/auth-selectors';
 import Balance from '../../components/Balance';
 import ReportBalance from '../../components/ReportBalance/ReportBalance';
+
 import {
   fetchSuccess,
+  setIsLoading,
   fetchError,
   sumByCategoryIncome,
   sumByCategoryConsumption,
-  sumDescriptionConsumption,
-  sumDescriptionIncome,
+  clearChartData,
+  incomeData,
+  consumptionData,
+  changeActive,
 } from '../../redux/balance/index';
-import ReportChartMobile from '../../components/ReportChart/ReportChartMobile';
 
 const ReportPage = () => {
   let navigate = useNavigate();
@@ -30,8 +33,8 @@ const ReportPage = () => {
   const { data } = useSelector(data => data.balanceReducer);
   const token = useSelector(getToken);
   const dispatch = useDispatch();
-  const [isLoading, setLoading] = useState(false);
-  const { category } = useSelector(data => data.balanceReducer);
+  // const [isLoading, setLoading] = useState(false);
+  const { category, isLoading } = useSelector(data => data.balanceReducer);
 
   const fetchData = async () => {
     let config = {
@@ -40,15 +43,15 @@ const ReportPage = () => {
       },
     };
     try {
-      setLoading(true);
+      dispatch(setIsLoading(true));
       const response = await axios.get(
         `/transaction/report/${thisYear}/${thisMonth + 1}`,
         config,
       );
       dispatch(fetchSuccess(response.data));
-      setLoading(false);
+      dispatch(setIsLoading(false));
     } catch (error) {
-      setLoading(false);
+      dispatch(setIsLoading(false));
       dispatch(fetchError(error.message));
     }
   };
@@ -61,17 +64,19 @@ const ReportPage = () => {
     if (data) {
       dispatch(sumByCategoryIncome(data.sumByCategoryIncome));
       dispatch(sumByCategoryConsumption(data.sumByCategoryConsumption));
-      dispatch(sumDescriptionIncome(data.sumDescriptionIncome));
-      dispatch(sumDescriptionConsumption(data.sumDescriptionConsumption));
+      dispatch(incomeData(data.incomeTransaction));
+      dispatch(consumptionData(data.consumptionTransaction));
+      console.log(data);
     }
   }, [isLoading]);
 
-  function handleClick() {
+  const handleClick = () => {
     navigate('/');
-  }
+  };
 
   const nextMonth = () => {
     setThisMonth(thisMonth + 1);
+    dispatch(changeActive(0));
     if (thisMonth === 11) {
       setThisMonth(0);
       setThisYear(thisYear + 1);
@@ -80,16 +85,29 @@ const ReportPage = () => {
 
   const prevMonth = () => {
     setThisMonth(thisMonth - 1);
+    dispatch(changeActive(0));
     if (thisMonth === 0) {
       setThisMonth(11);
       setThisYear(thisYear - 1);
     }
   };
+  const clearPrevDataMonth = () => {
+    dispatch(clearChartData());
+    prevMonth();
+  };
+  const clearNextDataMonth = () => {
+    dispatch(clearChartData());
+    nextMonth();
+  };
+  const goHomeDataClear = () => {
+    dispatch(clearChartData());
+    handleClick();
+  };
 
   return (
     <BackgroundReport>
       <div className={s.container}>
-        <button className={s.button__back} onClick={handleClick}>
+        <button className={s.button__back} onClick={goHomeDataClear}>
           <Icons iconName="goArrow" />
           <span className={s.button__name}>Вернуться на главную</span>
         </button>
@@ -108,14 +126,14 @@ const ReportPage = () => {
                     <div className={s.datePicker__container}>
                       <button
                         className={s.datePicker__button}
-                        onClick={prevMonth}
+                        onClick={clearPrevDataMonth}
                       >
                         <Icons iconName="leftArrow" />
                       </button>
                       <DateField thisYear={thisYear} thisMonth={thisMonth} />
                       <button
                         className={s.datePicker__button}
-                        onClick={nextMonth}
+                        onClick={clearNextDataMonth}
                       >
                         <Icons iconName="rightArrow" />
                       </button>
@@ -132,14 +150,14 @@ const ReportPage = () => {
                     <div className={s.datePicker__container}>
                       <button
                         className={s.datePicker__button}
-                        onClick={prevMonth}
+                        onClick={clearPrevDataMonth}
                       >
                         <Icons iconName="leftArrow" />
                       </button>
                       <DateField thisYear={thisYear} thisMonth={thisMonth} />
                       <button
                         className={s.datePicker__button}
-                        onClick={nextMonth}
+                        onClick={clearNextDataMonth}
                       >
                         <Icons iconName="rightArrow" />
                       </button>
@@ -157,27 +175,9 @@ const ReportPage = () => {
       <ReportWrapper>
         <ReportCoast />
       </ReportWrapper>
-      <Media
-        queries={{
-          small: '(max-width: 767px)',
-          medium: '(min-width: 768px)',
-        }}
-      >
-        {matches => (
-          <Fragment>
-            {matches.small && (
-              <ReportWrapper>
-                <ReportChartMobile category={category} />
-              </ReportWrapper>
-            )}
-            {matches.medium && (
-              <ReportWrapper>
-                <ReportChart category={category} />
-              </ReportWrapper>
-            )}
-          </Fragment>
-        )}
-      </Media>
+      <ReportWrapper>
+        <ReportChart category={category} year={thisYear} month={thisMonth} />
+      </ReportWrapper>
     </BackgroundReport>
   );
 };

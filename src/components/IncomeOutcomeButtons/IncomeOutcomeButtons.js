@@ -1,14 +1,13 @@
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState } from 'react';
 import Media from 'react-media';
-import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { getToken } from '../../redux/auth/auth-selectors';
-import { fetchSuccess, fetchError, summary } from '../../redux/balance/index';
+import { useDispatch } from 'react-redux';
+import summaryOperations from '../../redux/summary/summaryOperations';
 import styles from './IncomeOutcomeButtons.module.css';
 
 const IncomeOutcomeButtons = ({
   transactionType,
-  toggleTransactionType,
+  setTransactionTypeIncome,
+  setTransactionTypeConsumption,
   showMobileAddView,
 }) => {
   const type = transactionType;
@@ -16,15 +15,14 @@ const IncomeOutcomeButtons = ({
   const [outcomeActive, setOutcomeActive] = useState(true);
   const [incomeActive, setIncomeActive] = useState(false);
   const dispatch = useDispatch();
-  const token = useSelector(getToken);
+
   const [thisYear, setThisYear] = useState(2022);
-  const { data } = useSelector(data => data.balanceReducer);
-  const [isLoading, setLoading] = useState(false);
 
   const toggleActive = () => {
     if (incomeActive) {
       setOutcomeActive(true);
       setIncomeActive(false);
+      dispatch(summaryOperations.getSummary(type, thisYear));
       return;
     }
 
@@ -34,48 +32,15 @@ const IncomeOutcomeButtons = ({
     }
   };
 
-  const changeType = () => {
-    toggleTransactionType();
-  };
-
-  const showMobile = () => {
+  const setTransactionTypeConsumptionClick = () => {
+    setTransactionTypeConsumption();
     showMobileAddView();
   };
 
-  const changeTypeView = () => {
-    changeType();
-    showMobile();
+  const setTransactionTypeIncomeClick = () => {
+    setTransactionTypeIncome();
+    showMobileAddView();
   };
-
-  const fetchSummary = async type => {
-    let config = {
-      headers: {
-        Authorization: 'Bearer ' + token,
-      },
-    };
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `/transaction/summary/${type}/${thisYear}`,
-        config,
-      );
-      dispatch(fetchSuccess(response.data));
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      dispatch(fetchError(error.message));
-    }
-  };
-
-  useEffect(() => {
-    fetchSummary(type);
-  }, [thisYear, type, dispatch]);
-
-  useEffect(() => {
-    if (data) {
-      dispatch(summary(data.summary));
-    }
-  }, [isLoading]);
 
   return (
     <Media
@@ -91,7 +56,7 @@ const IncomeOutcomeButtons = ({
               <button
                 className={styles.typeButton}
                 type="button"
-                onClick={changeTypeView}
+                onClick={setTransactionTypeConsumptionClick}
               >
                 РАСХОД
               </button>
@@ -99,7 +64,7 @@ const IncomeOutcomeButtons = ({
               <button
                 className={styles.typeButton}
                 type="button"
-                onClick={changeTypeView}
+                onClick={setTransactionTypeIncomeClick}
               >
                 ДОХОД
               </button>
@@ -111,7 +76,7 @@ const IncomeOutcomeButtons = ({
                 className={`${styles.typeButton}
                ${type === 'consumption' && styles.isActive}`}
                 type="button"
-                onClick={(toggleActive, changeType)}
+                onClick={(toggleActive, setTransactionTypeConsumption)}
               >
                 РАСХОД
               </button>
@@ -120,7 +85,7 @@ const IncomeOutcomeButtons = ({
                 className={`${styles.typeButton}
                ${type === 'income' && styles.isActive}`}
                 type="button"
-                onClick={(toggleActive, changeType)}
+                onClick={(toggleActive, setTransactionTypeIncome)}
               >
                 ДОХОД
               </button>

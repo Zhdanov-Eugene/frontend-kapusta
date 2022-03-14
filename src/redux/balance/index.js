@@ -6,24 +6,26 @@ const initialState = {
   error: null,
   sumByCategoryIncome: null,
   sumByCategoryConsumption: null,
+  sumDescription: null,
   category: null,
+  income: null,
+  consumption: null,
   summary: [],
+  active: 0,
 };
 
 const balanceSlice = createSlice({
   name: 'balance',
   initialState,
   reducers: {
-    fetchBalanse(state) {
-      state.isLoading = true;
+    setIsLoading(state, { payload }) {
+      state.isLoading = payload;
     },
     fetchSuccess(state, { payload }) {
       state.data = payload;
-      state.isLoading = false;
     },
     fetchError(state, { payload }) {
       state.error = payload;
-      state.isLoading = false;
     },
     sumByCategoryIncome(state, { payload }) {
       state.sumByCategoryIncome = payload;
@@ -34,12 +36,10 @@ const balanceSlice = createSlice({
     setCategory(state, { payload }) {
       state.category = payload;
     },
-    sumDescriptionIncome(state, { payload }) {
-      state.sumDescriptionIncome = payload;
+    sumDescription(state, { payload }) {
+      state.sumDescription = payload;
     },
-    sumDescriptionConsumption(state, { payload }) {
-      state.sumDescriptionConsumption = payload;
-    },
+
     incomeData(state, { payload }) {
       state.income = payload;
     },
@@ -49,19 +49,28 @@ const balanceSlice = createSlice({
     summary(state, { payload }) {
       state.summary = payload;
     },
+    clearChartData(state) {
+      state.category = null;
+    },
+    changeActive(state, { payload }) {
+      state.active = payload;
+    },
   },
 });
 
 export const {
-  fetchBalanse,
+  setIsLoading,
   fetchSuccess,
   fetchError,
   sumByCategoryIncome,
   sumByCategoryConsumption,
   setCategory,
-  sumDescriptionIncome,
-  sumDescriptionConsumption,
+  sumDescription,
+  clearChartData,
   summary,
+  incomeData,
+  consumptionData,
+  changeActive,
 } = balanceSlice.actions;
 
 export default balanceSlice.reducer;
